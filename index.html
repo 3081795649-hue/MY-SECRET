@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>MY SECRET</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Arial",sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+#phone{width:100%;max-width:430px;height:100dvh;min-height:600px;margin:auto;position:relative;overflow:hidden;background:#f5f5f5}
+#status{position:absolute;z-index:8;top:0;width:100%;height:34px;padding:8px 23px;display:flex;justify-content:space-between;font-size:12px;color:white;text-shadow:0 1px 4px #333}
+#lock{position:absolute;inset:0;z-index:20;background:linear-gradient(#0002,#0003),url("wallpaper.jpg") center/cover no-repeat;display:flex;flex-direction:column;align-items:center;padding-top:100px}
+#lockDate{font-size:17px;text-shadow:0 1px 5px #000}
+#lockClock{font-size:76px;font-weight:200;margin:3px 0 35px;text-shadow:0 1px 5px #000}
+#pin{width:175px;padding:12px;border-radius:14px;border:1px solid #ffffff90;background:#ffffff35;color:white;text-align:center;letter-spacing:8px;outline:none;backdrop-filter:blur(12px)}
+#pin::placeholder{color:#fff}
+#unlockMsg{height:26px;margin-top:10px;font-size:13px;text-shadow:0 1px 4px #000}
+#lockBottom{position:absolute;bottom:35px;width:100%;display:flex;justify-content:space-around}
+.lockCircle{width:44px;height:44px;border-radius:50%;background:#ffffff45;display:grid;place-items:center;backdrop-filter:blur(8px)}
+#screen{position:absolute;inset:0;padding-top:35px;background:linear-gradient(145deg,#a9b8c7,#c4a9b2 55%,#d7b8a6)}
+#home{padding:26px 22px}
+#homeDate{font-size:14px;color:white;text-shadow:0 1px 3px #555}
+#homeClock{font-size:48px;font-weight:200;margin:3px 0 27px}
+#appGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:23px 12px}
+.app{border:0;background:none;color:white;text-align:center;padding:0}
+.appIcon{width:59px;height:59px;border-radius:15px;margin:auto auto 6px;display:grid;place-items:center;font-size:29px;box-shadow:0 5px 14px #0003;position:relative}
+.app small{font-size:11px;text-shadow:0 1px 4px #333}
+.kakao{background:#fee500;color:#392f00}
+.insta{background:linear-gradient(35deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5)}
+.xapp{background:#080808;color:white}
+.phoneapp{background:#28c76f;color:white}
+.notes{background:#fff;color:#333}
+.calendar{background:#fff;color:#e34e4e}
+.settings{background:#858b98}
+.safari{background:#dceeff;color:#2583df}
+.music{background:#f04b75}
+.mail{background:#fff;color:#3585dc}
+#dock{position:absolute;bottom:22px;left:16px;right:16px;padding:12px 8px;border-radius:25px;background:#ffffff45;display:flex;justify-content:space-around;backdrop-filter:blur(12px)}
+#dock .appIcon{width:52px;height:52px;margin:0}
+#app{display:none;position:absolute;inset:0;z-index:5;background:#f5f5f7;color:#171717;padding-top:35px}
+#appHeader{height:54px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #eee;font-weight:650}
+#appHeader button{border:0;background:none;color:#2878d5;font-size:15px}
+#appBody{height:calc(100% - 90px);overflow:auto}
+#homeBar{position:absolute;bottom:6px;left:calc(50% - 65px);width:130px;height:5px;border-radius:5px;background:#111;z-index:30}
+#chatList{background:white;min-height:100%}
+.contact{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #eee;gap:12px;cursor:pointer}
+.avatar{width:47px;height:47px;border-radius:50%;background:#e7e7e7;color:#555;display:grid;place-items:center;font-size:20px;flex-shrink:0;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.contactText{flex:1;min-width:0}
+.contactText b{display:block;font-size:15px}
+.contactText small{color:#888;display:block;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#chat{height:100%;display:flex;flex-direction:column;background:#b9c8b9}
+#chatTop{height:52px;flex-shrink:0;background:#f8f8f8;display:flex;align-items:center;padding:0 12px;gap:12px;border-bottom:1px solid #ddd}
+#chatTop button{border:0;background:none;color:#3984d6;font-size:15px}
+#chatName{font-weight:650;flex:1;text-align:center;margin-right:35px}
+#messages{flex:1;overflow:auto;padding:14px 11px}
+.msg{max-width:84%;padding:10px 12px;border-radius:15px;margin:8px 0;font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.in{background:white;color:#222;border-top-left-radius:4px}
+.msg.out{background:#fee500;color:#222;margin-left:auto;border-top-right-radius:4px}
+.translation{display:block;color:#777;font-size:12px;margin-top:5px;border-top:1px solid #eee;padding-top:4px}
+.msg.out .translation{color:#6d6200}
+#typing{font-size:12px;color:#555;padding:0 14px 5px;min-height:20px}
+#composer{background:#f8f8f8;padding:8px;display:flex;gap:7px;align-items:center}
+#reply{flex:1;min-width:0;border:0;border-radius:20px;background:white;padding:11px 13px;outline:none;color:#222}
+#send{border:0;background:#fee500;color:#222;border-radius:18px;padding:10px 15px;font-weight:650}
+#choices{display:flex;gap:7px;overflow-x:auto;padding:7px;background:#f8f8f8}
+.choice{border:1px solid #ddd;border-radius:16px;background:white;padding:7px 11px;white-space:nowrap;font-size:12px;color:#333}
+#feed{padding:15px;background:white;min-height:100%;color:#222}
+.post{border-bottom:1px solid #eee;padding:14px 0;line-height:1.6}
+.post b{font-size:14px}
+.post p{font-size:14px;margin:7px 0}
+.post small{color:#888}
+.simple{padding:18px;background:white;min-height:100%;line-height:1.7}
+.simple button{border:0;border-radius:10px;background:#eee;padding:10px;margin:5px}
+#toast{position:absolute;top:45px;left:12%;width:76%;background:#333;color:white;padding:12px;border-radius:13px;z-index:40;display:none;font-size:13px;box-shadow:0 4px 18px #0004}
+</style>
+</head>
+<body>
+<div id="phone">
+<div id="status"><span>◉ KT</span><span>22:16　◖ ▰</span></div>
+
+<div id="screen">
+<div id="home">
+<div id="homeDate">11月1日 星期日</div>
+<div id="homeClock">22:16</div>
+<div id="appGrid">
+<button class="app" onclick="openApp('kakao')"><div class="appIcon kakao">💬</div><small>KakaoTalk</small></button>
+<button class="app" onclick="openApp('insta')"><div class="appIcon insta">◎</div><small>Instagram</small></button>
+<button class="app" onclick="openApp('x')"><div class="appIcon xapp">𝕏</div><small>X</small></button>
+<button class="app" onclick="openApp('phone')"><div class="appIcon phoneapp">☎</div><small>电话</small></button>
+<button class="app" onclick="openApp('notes')"><div class="appIcon notes">▤</div><small>备忘录</small></button>
+<button class="app" onclick="openApp('calendar')"><div class="appIcon calendar">1</div><small>日历</small></button>
+<button class="app" onclick="openApp('settings')"><div class="appIcon settings">⚙</div><small>设置</small></button>
+<button class="app" onclick="openApp('safari')"><div class="appIcon safari">🧭</div><small>Safari</small></button>
+</div>
+<div id="dock">
+<button class="app" onclick="openApp('phone')"><div class="appIcon phoneapp">☎</div></button>
+<button class="app" onclick="openApp('kakao')"><div class="appIcon kakao">💬</div></button>
+<button class="app" onclick="openApp('music')"><div class="appIcon music">♫</div></button>
+<button class="app" onclick="openApp('insta')"><div class="appIcon insta">◎</div></button>
+</div>
+</div>
+</div>
+
+<div id="lock">
+<div id="lockDate">11月1日 星期日</div>
+<div id="lockClock">22:16</div>
+<div style="margin-bottom:14px;text-shadow:0 1px 5px #000">输入密码以解锁</div>
+<input id="pin" type="password" maxlength="4" inputmode="numeric" placeholder="••••">
+<div id="unlockMsg"></div>
+<div id="lockBottom"><div class="lockCircle">🔦</div><div class="lockCircle">📷</div></div>
+</div>
+
+<div id="app">
+<div id="appHeader">
+<button onclick="goBack()">‹ 返回</button>
+<span id="headerTitle">KakaoTalk</span>
+<button onclick="goHome()">主页</button>
+</div>
+<div id="appBody"></div>
+</div>
+<div id="toast"></div>
+<div id="homeBar"></div>
+</div>
+
+<script>
+const AVATAR="junho.jpg";
+const $=id=>document.getElementById(id);
+
+let currentApp="";
+let currentChat="";
+let cursors={jun:0,mom:0,friend:0};
+let histories={jun:[],mom:[],friend:[]};
+let rumorUnlocked=false;
+let hatersUnlocked=false;
+let pending=false;
+
+const story={
+jun:[
+{in:[["시간 있어? 보고 싶은데.","有时间吗？想见你。"]],choices:["你不是说今天很忙吗？"]},
+{in:[["바쁜 거 맞아 ㅋㅋ 근데 너 보고 싶은 건 별개지. 오늘 하루 종일 못 봤잖아.","忙是真的ㅋㅋ 但想见你是另一回事啊。今天一整天都没见到你了。"],["한 시간 정도는 괜찮을 것 같은데. 나 보러 올래?","我觉得一个小时左右还是可以的。要不要来见我？"]],choices:["算了，你忙你的吧。"]},
+{in:[["왜 그래 갑자기 ㅋㅋ 삐졌어?","怎么突然这样ㅋㅋ 生气了？"]],choices:["没有啊。"]},
+{in:[["진짜 아닌 거 맞아? 나 지금 이동해야 돼서 이따 연락할게.","真的没生气吗？我现在得去下一个地方了，晚点联系你。"]],choices:["嗯。"]},
+{in:[["너 아직 안 자?","你还没睡？"]],choices:["已经准备睡了。","你怎么还没睡？"]},
+{in:[["어제 피곤해서 바로 잠들었어. 오늘은 좀 괜찮을 것 같아. 너 뭐 해?","昨天太累了，直接睡着了。今天应该会稍微好一点。你在干嘛？"]],choices:["어제는 그렇게 바쁘더니 오늘은 시간 있나 봐?"]},
+{in:[["ㅋㅋㅋ 아직 삐졌네.","ㅋㅋㅋ 还在生气呢。"],["어제 진짜 정신없었어. 연락하려고 했는데 그대로 잠들었어.","昨天真的忙得不可开交。本来想联系你，结果直接睡着了。"],["근데 너 어제 나한테 좀 서운했지?","不过，你昨天是不是对我有点失望？"]],choices:["有一点。","没有，真的没事。"]},
+{in:[["오늘 끝나고 너 보러 갈까?","今天结束之后，我去找你怎么样？"]],choices:["나 진짜 보고 싶은 거 맞아?"]},
+{in:[["응. 진짜 보고 싶어.","嗯。真的很想见你。"],["어제도 보고 싶었는데 시간이 안 됐잖아.","昨天也想见你啊，但不是没时间嘛。"],["너 지금 나 놀리는 거지 ㅋㅋ","你现在是在逗我吧ㅋㅋ"],["지금 이동 중이야. 오늘 일정 끝나면 바로 연락할게.","我现在正在移动。今天行程结束后马上联系你。"],["근데 오늘은 진짜 안 기다리게 할게.","不过今天真的不会再让你等了。"]],choices:["好，我等你。"]},
+{in:[["나 이제 거의 끝났어.","我现在差不多快结束了。"],["오늘 너 보고 가도 돼?","今天我可以去见你再走吗？"]],choices:["네가 나 보러 오면 어제 일은 용서해 줄게."]},
+{in:[["ㅋㅋㅋ 그럼 무조건 가야겠네.","ㅋㅋㅋ 那我无论如何都得去了。"],["어디로 가면 돼? 너 지금 기숙사에 있어?","那我去哪里找你？你现在在宿舍吗？"]],choices:["嗯。不过你打算待多久？"]},
+{in:[["오늘은 적어도 한 시간은 있을 수 있어.","今天至少可以待一个小时。"],["더 있고 싶은데 아직 일정이 남아 있어서 ㅠㅠ","我也想待更久，但后面还有行程ㅠㅠ"]],choices:["好，那我等你。"]},
+{in:[["나 출발했어. 한 20분 정도 걸릴 것 같아.","我出发了。大概需要20分钟。"],["도착하면 연락할게. 밖에 나오지 말고 기다려 ㅋㅋ","到了我联系你。别出来，在里面等着ㅋㅋ"]],choices:["知道了。"]},
+{in:[["나 도착했어. 어디야?","我到了。你在哪儿？"]],choices:["안아 줘."]},
+{in:[["ㅋㅋㅋ 갑자기?","ㅋㅋㅋ 怎么突然这样？"],["나도 안아 주고 싶은데 지금은 못 하잖아 ㅠㅠ","我也想抱抱你啊，但现在又做不到ㅠㅠ"],["대신 오늘 일정 끝나면 전화할게. 오래 통화하자.","那今天行程结束后我给你打电话。我们多聊一会儿。"]],choices:["好，结束后给我打电话。"]},
+{in:[["너 혹시 X 봤어?","你有没有看到 X 上的消息？"]],choices:["我还没看，怎么了？"],unlock:true},
+{in:[["전화 왜 안 받아 ㅠㅠ","为什么不接电话ㅠㅠ"],["댓글 봤어?","你看评论了吗？"],["혹시 네 계정까지 찾아낸 거야?","他们该不会连你的账号都找到了吧？"]],choices:["有人已经找到我的账号了。"]},
+{in:[["진짜? 어디까지 찾아냈어?","真的？他们查到什么程度了？"],["계정 아이디까지 공개된 거야?","连账号 ID 都公开了吗？"],["일단 아무한테도 답장하지 마. 알겠지?","先不要回复任何陌生人。知道了吗？"]],choices:["朋友已经看到了，妈妈还不知道。","我不想因为你而被陌生人盯上。"]},
+{in:[["나 지금 회사 쪽에도 확인해 볼게. 너 혼자 걱정하지 마.","我现在也去跟公司那边确认一下。你别一个人担心。"],["근데 엄마나 친구들도 이 얘기 알고 있어?","不过，你妈妈和朋友们也知道这件事了吗？"]],choices:["朋友已经看到了，妈妈还不知道。","我不想因为你而被陌生人盯上。"]},
+{in:[["친구가 뭐래?","你朋友怎么说？"],["혹시 네 계정 아이디도 알고 있어?","她知道你的账号 ID 吗？"],["회사에서 지금 확인 중이래. 일단 너는 아무 말도 하지 말고 있어 줘.","公司现在正在确认情况。你先什么都不要说，好吗？"],["그리고 나 오늘 전화 꼭 할게. 기다리게 해서 미안해.","还有，我今天一定会给你打电话。抱歉又让你等了。"]],choices:["我没事，你先处理公司的事吧。"]},
+{in:[["혹시 지금 DM 많이 와?","你现在是不是收到了很多私信？"],["나한테도 회사에서 연락 왔어. 일단 네 계정은 비공개 유지하고, 모르는 계정은 차단해 줘.","公司也联系我了。先继续把账号设为私密，不认识的账号都拉黑吧。"],["그리고 네 주변 사람들까지 언급하는 건 나도 그냥 넘기지 않을게.","还有，他们连你身边的人都提到了，这件事我不会就这么算了。"],["지금 전화할까? 네 목소리 듣고 싶어.","现在给你打电话好吗？我想听听你的声音。"]],choices:["现在给我打电话吧。"]}
+],
+mom:[
+{in:[["밥은 먹었어? 요즘 연락이 뜸하네.","吃饭了吗？最近都不怎么联系家里。"]],choices:["엄마는 밥 먹었어? 나도 엄마 보고 싶어."]},
+{in:[["엄마는 먹었지 ㅋㅋ 너는 제대로 챙겨 먹고 다녀.","妈妈吃过啦ㅋㅋ 你自己要好好吃饭。"],["요즘 한국 생활은 어때? 별일 없지?","最近在韩国生活怎么样？没发生什么事吧？"],["이번 주말에는 시간 있어? 엄마랑 영상통화하자.","这周末有时间吗？和妈妈视频通话吧。"]],choices:["괜찮아 엄마. 진짜 걱정 안 해도 돼."]},
+{in:[["그래도 무슨 일 있으면 엄마한테 꼭 말해.","即使这样，有什么事也一定要告诉妈妈。"],["혼자 참지 말고. 알았지?","不要一个人忍着，知道了吗？"],["엄마는 네가 어디에 있든 항상 네 편이야. 밥 잘 먹고, 힘들면 전화해.","妈妈不管你在哪里，都会一直站在你这边。好好吃饭，难受了就给我打电话。"]],choices:["知道了，妈妈。"]}
+],
+friend:[
+{in:[["야 너 혹시 X 봤어? 지금 실트에 금주훈 이름 올라왔는데??","喂，你看到 X 了吗？金主训的名字现在上热搜了诶？？"]],choices:["봤는데 너는 어디까지 알아?"]},
+{in:[["나도 X에서 처음 봤어.","我也是第一次在 X 上看到的。"],["근데 사람들이 어떤 비공개 계정 하나 찾았다고 하더라.","不过有人说，他们找到一个私人账号。"],["혹시 너 아니지...?","该不会是你吧……？"],["야 솔직히 말해 봐. 나한테는 말해도 돼.","喂，你跟我说实话吧。告诉我也没关系。"]],choices:["괜찮아. 근데 지금은 별로 얘기하고 싶지 않아."]},
+{in:[["알겠어. 억지로 말 안 해도 돼.","知道了。不想说就不用勉强自己。"],["근데 진짜 이상한 사람들 많더라. 네 계정에 이상한 DM 오면 나한테도 알려 줘.","不过真的有很多奇怪的人。如果你的账号收到奇怪的私信，也告诉我。"],["혹시 필요하면 내가 같이 신고해 줄게.","如果你需要的话，我可以陪你一起举报。"]],choices:["好，有需要我会告诉你。"]}
+]
+};
+
+function save(){
+localStorage.setItem("mysecret-save",JSON.stringify({
+cursors,histories,rumorUnlocked,hatersUnlocked
+}));
+}
+function load(){
+try{
+const s=JSON.parse(localStorage.getItem("mysecret-save"));
+if(s){
+cursors=s.cursors||cursors;
+histories=s.histories||histories;
+rumorUnlocked=!!s.rumorUnlocked;
+hatersUnlocked=!!s.hatersUnlocked;
+}
+}catch(e){}
+}
+load();
+
+function toast(t){
+$("toast").textContent=t;
+$("toast").style.display="block";
+setTimeout(()=>$("toast").style.display="none",2200);
+}
+function unlock(){
+if($("pin").value==="0103"){
+$("lock").style.display="none";
+toast("已解锁 · MY SECRET");
+}else{
+$("unlockMsg").textContent="密码错误，请重试";
+$("pin").value="";
+}
+}
+$("pin").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
+$("pin").addEventListener("input",()=>{if($("pin").value.length===4)unlock()});
+
+function goHome(){
+$("app").style.display="none";
+$("screen").style.display="block";
+currentApp="";
+currentChat="";
+}
+function goBack(){
+if(currentChat){
+currentChat="";
+renderKakao();
+}else goHome();
+}
+function openApp(name){
+currentApp=name;
+$("app").style.display="block";
+$("screen").style.display="none";
+const titles={kakao:"KakaoTalk",insta:"Instagram",x:"X",phone:"电话",notes:"备忘录",calendar:"日历",settings:"设置",safari:"Safari",music:"音乐"};
+$("headerTitle").textContent=titles[name]||name;
+if(name==="kakao")renderKakao();
+else if(name==="x")renderX();
+else if(name==="insta")renderInsta();
+else renderSimple(name);
+}
+function avatar(id){
+if(id==="jun")return `<img src="${AVATAR}" alt="金主训头像">`;
+return id==="mom"?"👩":"🧑";
+}
+function renderKakao(){
+$("headerTitle").textContent=currentChat?({jun:"金主训",mom:"妈妈",friend:"朋友"}[currentChat]):"KakaoTalk";
+if(!currentChat){
+$("appBody").innerHTML='<div id="chatList"></div>';
+const contacts=[
+["jun","金主训","你还没睡？",true],
+["mom","妈妈","吃饭了吗？",rumorUnlocked],
+["friend","朋友","你看到 X 了吗？",rumorUnlocked]
+];
+$("chatList").innerHTML=contacts.map(([id,name,last,unlocked])=>`
+<div class="contact" style="opacity:${unlocked?1:.38}" onclick="${unlocked?`openChat('${id}')`:`toast('这段剧情还没有解锁')`}">
+<div class="avatar">${avatar(id)}</div>
+<div class="contactText"><b>${name}</b><small>${unlocked?last:"尚未解锁"}</small></div>
+</div>`).join("");
+}else renderChat();
+}
+function openChat(id){
+if(id!=="jun"&&!rumorUnlocked){
+toast("这段剧情还没有解锁");
+return;
+}
+currentChat=id;
+renderKakao();
+}
+function renderChat(){
+const id=currentChat;
+const index=cursors[id];
+const names={jun:"金主训",mom:"妈妈",friend:"朋友"};
+$("appBody").innerHTML=`
+<div id="chat">
+<div id="chatTop">
+<button onclick="currentChat='';renderKakao()">‹ 聊天</button>
+<div id="chatName">${names[id]}</div>
+</div>
+<div id="messages"></div>
+<div id="typing"></div>
+<div id="choices"></div>
+<div id="composer">
+<input id="reply" placeholder="输入消息..." autocomplete="off">
+<button id="send" onclick="sendMessage()">发送</button>
+</div>
+</div>`;
+const box=$("messages");
+histories[id].forEach(m=>addBubble(m.text,m.translation,m.side,false));
+if(index<story[id].length){
+const step=story[id][index];
+if(!histories[id].some(m=>m.key===index)){
+step.in.forEach(([ko,zh])=>{
+histories[id].push({key:index,text:ko,translation:zh,side:"in"});
+addBubble(ko,zh,"in",false);
+});
+}
+$("choices").innerHTML=step.choices.map((c,i)=>`
+<button class="choice" onclick="chooseReply(${JSON.stringify(c).replace(/"/g,"&quot;")})">${escapeHTML(c)}</button>
+`).join("");
+}else{
+$("choices").innerHTML='<span style="font-size:12px;color:#888">暂时没有新消息</span>';
+}
+box.scrollTop=box.scrollHeight;
+save();
+}
+function escapeHTML(s){
+return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function addBubble(text,translation,side,scroll=true){
+const box=$("messages");
+if(!box)return;
+const d=document.createElement("div");
+d.className="msg "+side;
+d.innerHTML=escapeHTML(text)+(translation?`<span class="translation">${escapeHTML(translation)}</span>`:"");
+box.appendChild(d);
+if(scroll)box.scrollTop=box.scrollHeight;
+}
+function chooseReply(text){
+$("reply").value=text;
+$("reply").focus();
+}
+function sendMessage(){
+if(pending)return;
+const id=currentChat;
+const index=cursors[id];
+const input=$("reply");
+const text=input.value.trim();
+if(!text){toast("先输入一条消息");return;}
+if(index>=story[id].length){toast("目前没有新的消息");return;}
+
+histories[id].push({text,translation:"",side:"out"});
+addBubble(text,"","out");
+input.value="";
+$("choices").innerHTML="";
+pending=true;
+$("typing").textContent="对方正在输入...";
+$("send").disabled=true;
+
+setTimeout(()=>{
+pending=false;
+$("typing").textContent="";
+$("send").disabled=false;
+cursors[id]++;
+
+if(id==="jun" && cursors.jun>=15 && !rumorUnlocked){
+rumorUnlocked=true;
+toast("新通知：X 上出现了关于金主训的消息");
+}
+if(id==="jun" && cursors.jun>=17){
+hatersUnlocked=true;
+}
+save();
+renderChat();
+},1000);
+}
+function renderX(){
+$("appBody").innerHTML=`
+<div id="feed">
+<h2>𝕏　为你推荐</h2>
+${!rumorUnlocked?`
+<div class="post">暂时没有新的热门消息。<br><small>稍后再查看</small></div>
+`:`
+<div class="post"><b>娱乐实时热搜</b><p>금주훈 열애설　金主训恋爱传闻</p><small>Day 2 · 18:37</small></div>
+<div class="post"><b>@daily_issue</b><p>방금 올라온 제보 봤는데 이거 진짜면 좀 심각한 거 아님?</p><p>刚看到刚发的爆料，如果这是真的，事情是不是有点严重？</p></div>
+<div class="post"><b>@user_0821</b><p>여자친구 계정 찾았다는 사람 있던데 비공개 계정이라 확인은 안 됨.</p><p>有人说找到女朋友的账号了，不过是私人账号，所以还不能确认。</p></div>
+<div class="post"><b>@bluehour</b><p>팔로워 목록이랑 예전 게시물 보면 누군지 알 수 있을 듯.</p><p>看看关注列表和以前的帖子，说不定能知道是谁。</p></div>
+<div class="post"><b>@staycalm</b><p>아직 확실한 건 없으니까 너무 몰아가지 말자.</p><p>现在还没有确切证据，先别把事情闹得太过分。</p></div>
+`}
+</div>`;
+}
+function renderInsta(){
+$("appBody").innerHTML=`
+<div id="feed">
+<h2>Instagram</h2>
+<div class="post"><b>你的主页</b><p>私人账号 · Private account</p></div>
+${!hatersUnlocked?`
+<div class="post">目前没有新的私信请求。</div>
+`:`
+<div class="post"><b>消息请求 · 17</b>
+<p>너 금주훈 여자친구야? 진짜 역겹다.<br>你是金主训女朋友？真恶心。</p>
+<p>일반인이 왜 아이돌한테 붙어 있어? 관심받고 싶어?<br>一个普通人为什么要缠着爱豆？想博关注吗？</p>
+<p>계정 비공개로 돌리면 끝인 줄 알아? 다들 이미 찾았는데.<br>以为把账号设为私密就结束了吗？大家早就找到了。</p>
+<p>헤어져. 네가 뭔데 금주훈이랑 사귀어?<br>分手吧。你算什么，凭什么和金主训交往？</p>
+<p>네 주변 사람들 계정도 찾아보는 중임.<br>我们正在查你身边人的账号。</p>
+</div>
+<div class="post"><b>陌生人私信</b>
+<p>혹시 금주훈이랑 아는 사이세요?<br>请问你和金主训认识吗？</p>
+<p>계정이 비공개라서 더 궁금하네요.<br>因为你的账号是私密的，所以更让人好奇了。</p>
+</div>
+`}
+</div>`;
+}
+function renderSimple(name){
+const pages={
+phone:"<h2>最近通话</h2><p>暂无通话记录</p><button onclick=\"toast('暂无通话记录')\">拨号</button>",
+notes:"<h2>备忘录</h2><p>暂无备忘录</p>",
+calendar:"<h2>11月</h2><p>周日　周一　周二　周三　周四　周五　周六</p><p>1　2　3　4　5　6　7</p>",
+settings:"<h2>设置</h2><p>飞行模式　关闭</p><p>Wi-Fi　已连接</p><p>通知　声音与触感</p><p>隐私与安全性</p><button onclick=\"resetGame()\">重置游戏进度</button>",
+safari:"<h2>Safari</h2><input placeholder='搜索或输入网站地址' style='width:100%;padding:12px;border:1px solid #ddd;border-radius:12px'>",
+music:"<h2>音乐</h2><p>最近播放</p><p>暂无播放记录</p>"
+};
+$("appBody").innerHTML=`<div class="simple">${pages[name]||"暂无内容"}</div>`;
+}
+function resetGame(){
+if(confirm("确定要清空所有剧情进度并重新开始吗？")){
+localStorage.removeItem("mysecret-save");
+location.reload();
+}
+}
+</script>
+</body>
+</html>
