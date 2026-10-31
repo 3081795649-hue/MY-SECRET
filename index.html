@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#111111">
+<title>MY SECRET</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Arial",sans-serif}
+button,input{font:inherit}
+#phone{width:100%;max-width:430px;height:100dvh;min-height:600px;margin:auto;background:#f5f5f7;position:relative;overflow:hidden;color:#111}
+#status{height:30px;padding:7px 22px 0;display:flex;justify-content:space-between;font-size:12px;position:absolute;z-index:5;width:100%;color:white;text-shadow:0 1px 4px #333}
+#lock{position:absolute;inset:0;background:#222;z-index:10;color:white;text-align:center;background-size:cover;background-position:center}
+#lock:before{content:"";position:absolute;inset:0;background:linear-gradient(#0002,#0005)}
+.lockcontent{position:relative;padding-top:95px}
+#date{font-size:18px}
+#clock{font-size:76px;font-weight:200;letter-spacing:-3px}
+.lockhint{position:absolute;bottom:55px;width:100%;font-size:13px}
+#passbox{margin:22px auto 0;width:210px}
+#pass{width:100%;border:0;border-bottom:1px solid #fff;background:#ffffff22;color:white;text-align:center;padding:12px;outline:none;font-size:20px;letter-spacing:8px}
+#unlockbtn{margin-top:12px;background:#ffffff33;color:white;border:1px solid #ffffff77;border-radius:20px;padding:9px 24px}
+#home{display:none;position:absolute;inset:0;background:linear-gradient(135deg,#d9dce5,#f3e9e8);background-size:cover;background-position:center;padding:60px 20px 30px}
+#home:before{content:"";position:absolute;inset:0;background:#0002;pointer-events:none}
+#home>*{position:relative}
+.widget{background:#ffffffb8;border-radius:22px;padding:17px;margin-bottom:28px;backdrop-filter:blur(12px)}
+.widget small{color:#555}
+.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:23px 12px}
+.app{text-align:center;color:white;text-shadow:0 1px 3px #333;font-size:12px;cursor:pointer}
+.appicon{width:57px;height:57px;border-radius:15px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 4px 10px #0002;text-shadow:none}
+.kakao{background:#fee500;color:#3b3211}.insta{background:linear-gradient(35deg,#feda75,#d62976,#962fbf,#4f5bd5)}
+.xapp{background:#111}.phoneapp{background:#34c759}.notes{background:#ffcc42;color:#5d4c20}.calendar{background:white;color:#e34d4d}.settings{background:#8e9299}.dock{position:absolute;bottom:20px;left:15px;right:15px;padding:12px;border-radius:25px;background:#ffffff80;display:flex;justify-content:space-around;backdrop-filter:blur(15px)}
+.dock .appicon{margin:0}
+#appview{display:none;position:absolute;inset:0;background:#f5f5f7;color:#111}
+.topbar{height:58px;padding:18px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ddd;background:#fafafa}
+.back{border:0;background:none;color:#2879d8;font-size:16px;padding:0}
+#appbody{height:calc(100% - 58px);overflow:auto}
+.contact{display:flex;align-items:center;padding:14px;border-bottom:1px solid #e5e5e5;background:white;cursor:pointer;gap:12px}
+.avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#ddd;flex-shrink:0}
+.avatar.small{width:38px;height:38px}
+.contactinfo{flex:1}.contactinfo b{font-size:15px}.contactinfo small{display:block;color:#888;margin-top:5px}
+#chathead{display:flex;align-items:center;gap:10px}
+#messages{height:calc(100% - 120px);overflow:auto;padding:14px 12px;background:#aebdca}
+.daylabel{text-align:center;color:#fff;font-size:11px;margin:12px}
+.msgrow{display:flex;align-items:flex-end;gap:6px;margin:10px 0}
+.msgrow.mine{justify-content:flex-end}
+.bubble{max-width:78%;padding:10px 12px;border-radius:15px;background:white;font-size:14px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.mine .bubble{background:#a9e878}
+.translation{display:block;color:#777;font-size:12px;margin-top:5px}
+.msgtime{font-size:10px;color:#666}
+#replyarea{height:62px;display:flex;align-items:center;gap:8px;padding:8px;background:#f7f7f7;border-top:1px solid #ddd}
+#reply{flex:1;border:0;border-radius:20px;background:white;padding:11px 14px;outline:none;min-width:0}
+#send{border:0;border-radius:18px;background:#2785e8;color:white;padding:10px 16px}
+#choices{padding:8px;background:#f7f7f7;display:flex;gap:7px;overflow-x:auto}
+.choice{border:1px solid #aaa;border-radius:16px;background:white;padding:7px 11px;white-space:nowrap;font-size:12px}
+#social{padding:15px;background:white;min-height:100%}
+.post{padding:15px 0;border-bottom:1px solid #ddd;line-height:1.5;font-size:14px}
+.post small{color:#888}
+#bottomnote{font-size:11px;color:#888;text-align:center;padding:8px}
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="status"><span>9:41</span><span>●●●　Wi-Fi　▰</span></div>
+
+  <section id="lock">
+    <div class="lockcontent">
+      <div id="date">11月1日 星期日</div>
+      <div id="clock">9:41</div>
+      <div id="passbox">
+        <input id="pass" type="password" maxlength="4" inputmode="numeric" placeholder="输入密码">
+        <button id="unlockbtn" onclick="unlock()">解锁</button>
+        <div id="passerror" style="font-size:12px;margin-top:8px"></div>
+      </div>
+    </div>
+    <div class="lockhint">MY SECRET · 向上滑动解锁</div>
+  </section>
+
+  <section id="home">
+    <div class="widget">
+      <div style="font-size:12px;color:#555">星期日 · 11月1日</div>
+      <div style="font-size:27px;margin:5px 0">MY SECRET</div>
+      <small>今天也要好好生活。</small>
+    </div>
+    <div class="apps">
+      <div class="app" onclick="openApp('kakao')"><div class="appicon kakao">●</div>KakaoTalk</div>
+      <div class="app" onclick="openApp('instagram')"><div class="appicon insta">◎</div>Instagram</div>
+      <div class="app" onclick="openApp('x')"><div class="appicon xapp">𝕏</div>X</div>
+      <div class="app" onclick="openApp('phone')"><div class="appicon phoneapp">☎</div>电话</div>
+      <div class="app" onclick="openApp('notes')"><div class="appicon notes">▤</div>备忘录</div>
+      <div class="app" onclick="openApp('calendar')"><div class="appicon calendar">31</div>日历</div>
+      <div class="app" onclick="openApp('settings')"><div class="appicon settings">⚙</div>设置</div>
+    </div>
+    <div class="dock">
+      <div class="app" onclick="openApp('phone')"><div class="appicon phoneapp">☎</div></div>
+      <div class="app" onclick="openApp('kakao')"><div class="appicon kakao">●</div></div>
+      <div class="app" onclick="openApp('instagram')"><div class="appicon insta">◎</div></div>
+      <div class="app" onclick="openApp('x')"><div class="appicon xapp">𝕏</div></div>
+    </div>
+  </section>
+
+  <section id="appview">
+    <div class="topbar">
+      <button class="back" onclick="goHome()">‹ 返回</button>
+      <b id="apptitle">KakaoTalk</b>
+      <span style="width:42px"></span>
+    </div>
+    <div id="appbody"></div>
+  </section>
+</div>
+
+<script>
+const AVATAR="junho.PNG";
+const WALLPAPER="wallpaper.JPEG";
+document.getElementById("lock").style.backgroundImage=`url("${WALLPAPER}")`;
+document.getElementById("home").style.backgroundImage=`url("${WALLPAPER}")`;
+
+const story = [
+ {time:"22:16",incoming:[
+  ["시간 있어? 보고 싶은데.","有时间吗？想见你。"]
+ ],choices:["你不是说今天很忙吗？"]},
+ {time:"22:17",incoming:[
+  ["바쁜 거 맞아 ㅋㅋ 근데 너 보고 싶은 건 별개지. 오늘 하루 종일 못 봤잖아.","忙是真的ㅋㅋ 但想见你是另一回事啊。今天一整天都没见到你了。"],
+  ["한 시간 정도는 괜찮을 것 같은데. 나 보러 올래?","我觉得一个小时左右还是可以的。要不要来见我？"]
+ ],choices:["算了，你忙你的吧。"]},
+ {time:"22:18",incoming:[
+  ["왜 그래 갑자기 ㅋㅋ 삐졌어?","怎么突然这样ㅋㅋ 生气了？"]
+ ],choices:["没有啊。"]},
+ {time:"22:19",incoming:[
+  ["진짜 아닌 거 맞아? 나 지금 이동해야 돼서 이따 연락할게.","真的没生气吗？我现在得去下一个地方了，晚点联系你。"]
+ ],choices:["嗯。"]},
+ {time:"23:51",incoming:[
+  ["너 아직 안 자?","你还没睡？"]
+ ],choices:["还没。"]},
+ {time:"10:16",incoming:[
+  ["어제 피곤해서 바로 잠들었어. 오늘은 좀 괜찮을 것 같아. 너 뭐 해?","昨天太累了，直接睡着了。今天应该会稍微好一点。你在干嘛？"]
+ ],choices:["어제는 그렇게 바쁘더니 오늘은 시간 있나 봐?"]},
+ {time:"10:17",incoming:[
+  ["ㅋㅋㅋ 아직 삐졌네.","ㅋㅋㅋ 还在生气呢。"],
+  ["어제 진짜 정신없었어. 연락하려고 했는데 그대로 잠들었어.","昨天真的忙得不可开交。本来想联系你，结果直接睡着了。"],
+  ["근데 너 어제 나한테 좀 서운했지?","不过，你昨天是不是对我有点失望？"]
+ ],choices:["那你今天打算怎么办？"]},
+ {time:"10:22",incoming:[
+  ["오늘 끝나고 너 보러 갈까?","今天结束之后，我去找你怎么样？"]
+ ],choices:["나 진짜 보고 싶은 거 맞아?"]},
+ {time:"10:23",incoming:[
+  ["응. 진짜 보고 싶어.","嗯。真的很想见你。"],
+  ["어제도 보고 싶었는데 시간이 안 됐잖아.","昨天也想见你啊，但不是没时间嘛。"],
+  ["너 지금 나 놀리는 거지 ㅋㅋ","你现在是在逗我吧ㅋㅋ"],
+  ["지금 이동 중이야. 오늘 일정 끝나면 바로 연락할게.","我现在正在移动。今天行程结束后马上联系你。"],
+  ["근데 오늘은 진짜 안 기다리게 할게.","不过今天真的不会再让你等了。"]
+ ],choices:["好，我等你。"]},
+ {time:"13:46",incoming:[
+  ["나 이제 거의 끝났어.","我现在差不多快结束了。"],
+  ["오늘 너 보고 가도 돼?","今天我可以去见你再走吗？"]
+ ],choices:["네가 나 보러 오면 어제 일은 용서해 줄게."]},
+ {time:"13:47",incoming:[
+  ["ㅋㅋㅋ 그럼 무조건 가야겠네.","ㅋㅋㅋ 那我无论如何都得去了。"],
+  ["어디로 가면 돼? 너 지금 기숙사에 있어?","那我去哪里找你？你现在在宿舍吗？"]
+ ],choices:["嗯。不过你打算待多久？"]},
+ {time:"13:48",incoming:[
+  ["오늘은 적어도 한 시간은 있을 수 있어.","今天至少可以待一个小时。"],
+  ["더 있고 싶은데 아직 일정이 남아 있어서 ㅠㅠ","我也想待更久，但后面还有行程ㅠㅠ"]
+ ],choices:["那你到了告诉我。"]},
+ {time:"14:26",incoming:[
+  ["나 출발했어. 한 20분 정도 걸릴 것 같아.","我出发了。大概需要20分钟。"],
+  ["도착하면 연락할게. 밖에 나오지 말고 기다려 ㅋㅋ","到了我联系你。别出来，在里面等着ㅋㅋ"]
+ ],choices:["知道了。"]},
+ {time:"14:49",incoming:[
+  ["나 도착했어. 어디야?","我到了。你在哪儿？"]
+ ],choices:["안아 줘."]},
+ {time:"14:52",incoming:[
+  ["ㅋㅋㅋ 갑자기?","ㅋㅋㅋ 怎么突然这样？"],
+  ["나도 안아 주고 싶은데 지금은 못 하잖아 ㅠㅠ","我也想抱抱你啊，但现在又做不到ㅠㅠ"],
+  ["대신 오늘 일정 끝나면 전화할게. 오래 통화하자.","那今天行程结束后我给你打电话。我们多聊一会儿。"]
+ ],choices:["好，结束后给我打电话。"]},
+ {time:"18:37",incoming:[
+  ["너 혹시 X 봤어?","你有没有看到 X 上的消息？"]
+ ],choices:["我还没看，怎么了？"],unlockSocial:true}
+];
+
+let progress=Number(localStorage.getItem("ms_progress")||0);
+let messages=[];
+let currentApp="";
+let waiting=false;
+let lastReply="";
+
+function unlock(){
+ if(document.getElementById("pass").value==="0103"){
+  document.getElementById("lock").style.display="none";
+  document.getElementById("home").style.display="block";
+ }else{
+  document.getElementById("passerror").textContent="密码错误，请重试";
+ }
+}
+document.getElementById("pass").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
+
+function goHome(){
+ document.getElementById("appview").style.display="none";
+ document.getElementById("home").style.display="block";
+}
+function openApp(app){
+ currentApp=app;
+ document.getElementById("home").style.display="none";
+ document.getElementById("appview").style.display="block";
+ const titles={kakao:"KakaoTalk",instagram:"Instagram",x:"X",phone:"电话",notes:"备忘录",calendar:"日历",settings:"设置"};
+ document.getElementById("apptitle").textContent=titles[app]||app;
+ if(app==="kakao")showContacts();
+ else if(app==="instagram")showInstagram();
+ else if(app==="x")showX();
+ else if(app==="phone")showPhone();
+ else if(app==="notes")showSimple("备忘录","今天要做的事");
+ else if(app==="calendar")showSimple("日历","11月 · 星期日");
+ else if(app==="settings")showSimple("设置","通知 · 壁纸 · 隐私与安全");
+}
+function showContacts(){
+ let html=`<div class="contact" onclick="openChat()"><img class="avatar" src="${AVATAR}"><div class="contactinfo"><b>금주훈</b><small>你们的聊天记录</small></div><small>22:16</small></div>`;
+ if(progress>=14){
+ html+=`<div class="contact" onclick="openOther('mom')"><div class="avatar" style="display:grid;place-items:center;background:#f2c7a5">妈</div><div class="contactinfo"><b>妈妈</b><small>밥은 먹었어?</small></div></div>
+ <div class="contact" onclick="openOther('friend')"><div class="avatar" style="display:grid;place-items:center;background:#b8c9dc">友</div><div class="contactinfo"><b>朋友</b><small>야 너 혹시 X 봤어?</small></div></div>`;
+ }
+ document.getElementById("appbody").innerHTML=html;
+}
+function openChat(){
+ let beat=story[Math.min(progress,story.length-1)];
+ document.getElementById("appbody").innerHTML=`
+ <div class="topbar" style="height:54px;justify-content:flex-start;gap:9px">
+ <img class="avatar small" src="${AVATAR}"><b>금주훈</b><small style="margin-left:auto;color:#888">在线</small></div>
+ <div id="messages"><div class="daylabel">Day ${progress<4?1:2} · ${beat.time}</div>
+ ${beat.incoming.map(m=>`<div class="msgrow"><img class="avatar small" src="${AVATAR}"><div class="bubble">${m[0]}<span class="translation">${m[1]}</span></div></div>`).join("")}
+ </div>
+ <div id="choices">${beat.choices.map(c=>`<button class="choice" onclick="chooseReply(${JSON.stringify(c).replace(/"/g,'&quot;')})">${c}</button>`).join("")}</div>
+ <div id="replyarea"><input id="reply" placeholder="输入消息..." autocomplete="off"><button id="send" onclick="sendReply()">发送</button></div>`;
+ document.getElementById("messages").scrollTop=99999;
+}
+function chooseReply(text){document.getElementById("reply").value=text}
+function sendReply(){
+ if(waiting)return;
+ const input=document.getElementById("reply");
+ const text=input.value.trim();
+ if(!text)return;
+ waiting=true;
+ const box=document.getElementById("messages");
+ box.innerHTML+=`<div class="msgrow mine"><div class="bubble">${escapeHTML(text)}</div></div>`;
+ input.value="";
+ const beat=story[Math.min(progress,story.length-1)];
+ lastReply=text;
+ progress++;
+ localStorage.setItem("ms_progress",progress);
+ document.getElementById("choices").innerHTML="";
+ if(progress>=14){
+   setTimeout(()=>{waiting=false;showContacts()},1000);
+   return;
+ }
+ setTimeout(()=>{
+  waiting=false;
+  openChat();
+ },1000);
+}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function showX(){
+ if(progress<14){
+ document.getElementById("appbody").innerHTML='<div id="social"><h2>𝕏</h2><p>暂时没有新的动态。</p><small>继续推进 KakaoTalk 聊天，X 上的爆料才会出现。</small></div>';
+ return;
+ }
+ document.getElementById("appbody").innerHTML=`<div id="social"><h2>𝕏 · 为你推荐</h2>
+ <div class="post"><b>热门 · 娱乐</b><p>有人说发现了金主训恋爱相关的线索……是真的吗？</p><small>刚刚 · 讨论中</small></div>
+ <div class="post"><p>방금 올라온 제보 봤는데 이거 진짜면 좀 심각한 거 아님?</p><p>刚看到刚发的爆料，如果这是真的，事情是不是有点严重？</p></div>
+ <div class="post"><p>여자친구 계정 찾았다는 사람 있던데 비공개 계정이라 확인은 안 됨.</p><p>有人说找到女朋友的账号了，不过是私人账号，所以还不能确认。</p></div>
+ <div class="post"><p>팔로워 목록이랑 예전 게시물 보면 누군지 알 수 있을 듯.</p><p>看看关注列表和以前的帖子，说不定能知道是谁。</p></div>
+ <div class="post"><p>아직 확실한 건 없으니까 너무 몰아가지 말자.</p><p>现在还没有确切证据，先别把事情闹得太过分。</p></div>
+ <div class="post"><b>趋势</b><p>金主训 · 恋爱传闻 · 私人账号</p></div></div>`;
+}
+function showInstagram(){
+ document.getElementById("appbody").innerHTML=`<div id="social"><h2>Instagram</h2><p>你的主页</p><div class="post">动态　　私信　　个人主页</div>${progress>=14?'<div class="post">消息请求　17 条<br><small>有陌生账号向你发送了消息。</small></div>':'<div class="post">暂时没有新消息。</div>'}</div>`;
+}
+function openOther(who){
+ let isMom=who==="mom";
+ document.getElementById("appbody").innerHTML=`<div class="topbar" style="height:54px"><b>${isMom?"妈妈":"朋友"}</b></div><div id="messages" style="height:calc(100% - 116px);background:#aebdca;padding:12px">
+ ${isMom?`<div class="msgrow"><div class="bubble">밥은 먹었어? 요즘 연락이 뜸하네.<span class="translation">吃饭了吗？最近都不怎么联系家里。</span></div></div><div class="msgrow mine"><div class="bubble">엄마는 밥 먹었어? 나도 엄마 보고 싶어.<span class="translation">妈妈吃饭了吗？我也想妈妈了。</span></div></div><div class="msgrow"><div class="bubble">엄마는 먹었지 ㅋㅋ 너는 제대로 챙겨 먹고 다녀.<span class="translation">妈妈吃过啦ㅋㅋ 你自己要好好吃饭。</span></div></div><div class="msgrow"><div class="bubble">요즘 한국 생활은 어때? 별일 없지?<span class="translation">最近在韩国生活怎么样？没发生什么事吧？</span></div></div><div class="msgrow"><div class="bubble">이번 주말에는 시간 있어? 엄마랑 영상통화하자.<span class="translation">这周末有时间吗？和妈妈视频通话吧。</span></div></div>`:
+ `<div class="msgrow"><div class="bubble">야 너 혹시 X 봤어? 지금 실트에 금주훈 이름 올라왔는데??<span class="translation">喂，你看到 X 了吗？金主训的名字现在上热搜了诶？？</span></div></div><div class="msgrow mine"><div class="bubble">봤는데 너는 어디까지 알아?<span class="translation">看到了，不过你知道多少？</span></div></div><div class="msgrow"><div class="bubble">나도 X에서 처음 봤어.<span class="translation">我也是第一次在 X 上看到的。</span></div></div><div class="msgrow"><div class="bubble">근데 사람들이 어떤 비공개 계정 하나 찾았다고 하더라.<span class="translation">不过有人说，他们找到一个私人账号。</span></div></div><div class="msgrow"><div class="bubble">혹시 너 아니지...?<span class="translation">该不会是你吧……？</span></div></div>`}
+ </div><div id="replyarea"><input id="reply" placeholder="输入消息..."><button id="send" onclick="alert('消息已发送')">发送</button></div>`;
+}
+function showPhone(){document.getElementById("appbody").innerHTML='<div id="social"><h2>最近通话</h2><p>暂无通话记录</p><p>拨号键盘</p><div style="font-size:28px;line-height:2;text-align:center">1　　2　　3<br>4　　5　　6<br>7　　8　　9<br>*　　0　　#</div></div>'}
+function showSimple(title,content){document.getElementById("appbody").innerHTML=`<div id="social"><h2>${title}</h2><p>${content}</p></div>`}
+</script>
+</body>
+</html>
